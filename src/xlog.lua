@@ -36,6 +36,10 @@ local xlog = {_version="1.0"}
 
 DEBUG = true
 
+function xlog.openDebug(open)
+    DEBUG = open
+end
+
 function xlog.d(tag, msg)
     if DEBUG then
         print(log("d", tag, msg))

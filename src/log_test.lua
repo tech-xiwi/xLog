@@ -4,7 +4,7 @@ local t0 = socket.gettime()
 
 tag = "log_test.lua"
 
-for i=1,100000 do
+for i=1,100 do
     -- log.v(tag,"test long content "..i)
     if i % 5 == 0 then
         log.i(tag,"test long content "..i)
@@ -21,4 +21,4 @@ end
 
 -- do something
 local t1 = socket.gettime()
-print("used time: "..t1-t0.."ms")
+print("used time: "..t1-t0.."s")
