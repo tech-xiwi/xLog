@@ -36,6 +36,25 @@ local xlog = {_version="1.0"}
 
 DEBUG = true
 
+local function traceback()
+    local stack = 1
+    local infoResult
+    local name
+    for level = 1, math.huge do
+        local info = debug.getinfo(level, "nSl")
+        if not info then break end
+        if info.what == "C" then
+        else
+            if info.name then
+                name = info.name
+            end
+            stack = level
+            infoResult = info
+        end
+    end
+    return stack,infoResult,name
+end
+
 function xlog.openDebug(open)
     DEBUG = open
 end
@@ -72,7 +91,18 @@ function log(level, tag, msg)
     local date = os.time()
     local millSec = string.format("%.6f", os.clock())
     date = os.date("%Y-%m-%d %H:%M:%S", date)
-    return date .. string.sub(millSec,2,#millSec) .. " xLog : ".. level .. " : " .. tag .. " :" .. msg
+    if DEBUG then
+        local line
+        local stack, info ,name = traceback()
+        if name == "d" or name == "i" or name == "e"  or name == "w"or name == "v" then
+            line = info.currentline
+        else
+            line = debug.getinfo(stack-2).currentline
+        end
+        return date .. string.sub(millSec,2,#millSec) .. " xLog : [" .. level .. "] " .. info.source.. " : " .. tag .. " line=" .. line .. " : " .. name .. " : " .. msg
+    else
+        return date .. string.sub(millSec,2,#millSec) .. " xLog : [".. level .. "] : " .. tag .. " : " .. msg
+    end
 end
 
 return xlog
